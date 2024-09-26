@@ -136,7 +136,7 @@ with col10:
         total_coste_pvpc=round(coste_pvpc-coste_exc,2)
         if total_coste_pvpc < 0:
             total_coste_pvpc=0
-        st.metric(f':violet-background[Total PVPC €/kWh]',value=total_coste_pvpc)
+        st.metric(f':violet-background[Total PVPC (€)]',value=total_coste_pvpc)
 
         #st.metric(f':violet-background[Demanda a facturar]', value=demanda_neteo)
     with col102:
