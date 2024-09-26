@@ -2,7 +2,3 @@ pandas
 plotly
 streamlit
 requests
-datetime
-openpyxl
-io
-time
