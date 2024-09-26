@@ -36,7 +36,7 @@ def download_esios_id(id,fecha_ini,fecha_fin,agrupacion,geo_ids):
         .loc[:,['datetime','value']] 
         )
      
-    return datos 
+    return datos
 
 # %%
 #para pruebas sin app
@@ -112,7 +112,6 @@ def obtener_file(file):
     df_demver_24h.reset_index(inplace=True)  
 
     return df_origen, df_coste_24h, df_demver_24h, demanda, demanda_neteo,vertido,vertido_neteo, fecha_ini_curva, fecha_fin_curva, precio_medio_exc, coste_exc, precio_medio_pvpc, coste_pvpc
-
 
 # %% [markdown]
 # id_exc=1739
@@ -241,8 +240,15 @@ def graf_no_neteo(df_origen):
 
 # %%
 def graf_coste_exc(df_coste_24h):
+    
+    #preparamos columna de color para representar barras positivas y negativas
+    df_coste_24h=df_coste_24h.copy()
+    df_coste_24h['color'] = df_coste_24h['vertido_neteo'].apply(lambda x: 'green' if x >= 0 else 'red')
+
+    #preparamos gráfico para usar dos ejes y
     graf_coste_exc = make_subplots(specs=[[{"secondary_y": True}]])
 
+    #eje y primario. vertido neto. es un área
     graf_coste_exc.add_trace(
         go.Scatter(
             x=df_coste_24h['hora'],
@@ -255,19 +261,22 @@ def graf_coste_exc(df_coste_24h):
             line=dict(width=2, color="#60b4ff")
         ),
         secondary_y=False,
-        
     )
 
+    #eje y secundario. coste de los vertidos. formato barras
     graf_coste_exc.add_trace(
             go.Bar(
                 x=df_coste_24h['hora'],
                 y=df_coste_24h['coste_exc'],
                 
                 name='coste_exc',
-                marker=dict(color="#09ab3b")
+                marker=dict(
+                    #color="#09ab3b")
+                    color=['#09ab3b' if v >= 0 else '#ff4b4b' for v in df_coste_24h['coste_exc']],
+                )
             ),
-            secondary_y=True  # Eje Y secundario
-        )
+            secondary_y=True  
+    )
 
 
     ymax=df_coste_24h['vertido_neteo'].max()
@@ -311,8 +320,6 @@ def graf_coste_exc(df_coste_24h):
         )
     
     return graf_coste_exc
-
-
 
 # %%
 def graf_coste_pvpc(df_coste_24h):
@@ -461,8 +468,5 @@ def graf_demver(df_demver_24h):
         )
     
     return graf_demver
-
-
-
 
 

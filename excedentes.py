@@ -86,7 +86,7 @@ with col5:
     graf4=graf_coste_exc(df_coste_24h)
     st.write(graf4)
 with col6:
-    st.subheader('Excedentes: Facturación',divider='rainbow')
+    st.subheader('Excedentes PVPC: Facturación',divider='rainbow')
     mensaje = f"Periodo facturado desde el **{fecha_ini_curva}** hasta el **{fecha_fin_curva}**"
     st.markdown(mensaje, unsafe_allow_html=True)
     st.info('En esta sección puedes ver una gráfica del acumulado horario de excedentes contrastada con el valor de los mismos. Como resultado, se obtiene el precio medio del excedente a facturar',icon="ℹ️")
@@ -103,7 +103,7 @@ with col7:
     graf5=graf_coste_pvpc(df_coste_24h)
     st.write(graf5)
 with col8:
-    st.subheader('Demanda: Facturación',divider='rainbow')
+    st.subheader('Demanda PVPC: Facturación',divider='rainbow')
     mensaje = f"Periodo facturado desde el **{fecha_ini_curva}** hasta el **{fecha_fin_curva}**"
     st.markdown(mensaje, unsafe_allow_html=True)
     st.info('En esta sección puedes ver una gráfica del acumulado horario de la demanda contrastada con el valor de la misma. Como resultado, se obtiene el precio medio de la demanda a facturar',icon="ℹ️")
@@ -116,5 +116,35 @@ with col8:
         st.metric(f':green-background[Coste a facturar (€)]', value=coste_pvpc)        
             
         
+col9, col10 = st.columns([.8,.2])
+with col9:
+    #graf5=graf_coste_pvpc(df_coste_24h)
+    #st.write(graf5)
+    st.empty()
+with col10:
+    st.subheader('Compara con tu oferta en fijo',divider='rainbow')
+    mensaje = f"Periodo facturado desde el **{fecha_ini_curva}** hasta el **{fecha_fin_curva}**"
+    st.markdown(mensaje, unsafe_allow_html=True)
+    st.info('Con los resultados anteriores de los excedentes y demanda PVPC, puedes compararlos con tu oferta en fijo. Introduce precio fijo de compra (consumo) y de venta (excedentes).',icon="ℹ️")
 
+    col101,col102=st.columns(2)
+    with col101:
+        precio_fijo_demanda=st.number_input('Introduce precio de compra en €/kWh', min_value=0.050, max_value=0.300,value=0.150,step=.001,format='%0.3f')
+        coste_fijo_demanda=round(precio_fijo_demanda*demanda_neteo,2)
+        st.metric(f':red-background[Coste del consumo (€)]', value=coste_fijo_demanda)
+
+        total_coste_pvpc=round(coste_pvpc-coste_exc,2)
+        if total_coste_pvpc < 0:
+            total_coste_pvpc=0
+        st.metric(f':violet-background[Total PVPC €/kWh]',value=total_coste_pvpc)
+
+        #st.metric(f':violet-background[Demanda a facturar]', value=demanda_neteo)
+    with col102:
+        precio_fijo_vertidos=st.number_input('Introduce precio de venta en €/kWh', min_value=0.010, max_value=0.150,value=0.080,step=.001,format='%0.3f')
+        coste_fijo_vertidos=round(precio_fijo_vertidos*vertido_neteo,2)
+        st.metric(f':green-background[Coste del vertido (€)]', value=coste_fijo_vertidos)
+
+        total_coste_fijo=round(coste_fijo_demanda-coste_fijo_vertidos,2)
+        dif_pvpc_fijo=round(total_coste_pvpc-total_coste_fijo,2)
+        st.metric(f':orange-background[Total FIJO (€)]', value=total_coste_fijo,delta=f'{dif_pvpc_fijo}%')
     
