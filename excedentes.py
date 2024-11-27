@@ -14,7 +14,7 @@ st.set_page_config(
 )
 st.title('Autoconsumo con excedentes')
 st.caption("Copyright by Jose Vidal :ok_hand:")
-url_apps = "https://epowerapps-by-josevidal.streamlit.app/"
+url_apps = "https://powerappspy-josevidal.streamlit.app/"
 st.write("Visita mi mini-web de [PowerAPPs](%s) con un montón de utilidades." % url_apps)
 url_linkedin = "https://www.linkedin.com/posts/jfvidalsierra_powerapps-activity-7216715360010461184-YhHj?utm_source=share&utm_medium=member_desktop"
 st.write("Deja tus comentarios y propuestas en mi perfil de [Linkedin](%s)" % url_linkedin)
