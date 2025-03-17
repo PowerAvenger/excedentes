@@ -1,4 +1,3 @@
-# %%
 import pandas as pd 
 import plotly.express as px
 import requests
@@ -6,16 +5,15 @@ import streamlit as st
 from plotly.subplots import make_subplots
 import plotly.graph_objects as go
 
-# %% [markdown]
-# ## Obtención de la curva de carga
-
-# %%
-#@st.cache_data(ttl=100)
-def download_esios_id(id,fecha_ini,fecha_fin,agrupacion,geo_ids):
+@st.cache_data
+def download_esios_id(id, fecha_ini, fecha_fin, agrupacion, geo_ids):
         
     token = st.secrets['ESIOS_API_KEY']
-    cab = dict()
-    cab ['x-api-key']= token
+    cab = {
+        'User-Agent': 'Mozilla/5.0',
+        'x-api-key' : token
+    }
+
     url_id = 'https://api.esios.ree.es/indicators'
     if geo_ids is None:
         url=f'{url_id}/{id}?1&time_agg=average&start_date={fecha_ini}T00:00:00&end_date={fecha_fin}T23:59:59&time_trunc={agrupacion}'    
@@ -38,12 +36,7 @@ def download_esios_id(id,fecha_ini,fecha_fin,agrupacion,geo_ids):
      
     return datos
 
-# %%
-#para pruebas sin app
 
-#file='curvas/2024 07.csv'
-
-# %%
 def obtener_file(file):
     print(file)
     df_file=pd.read_csv(file, sep=';')
@@ -113,15 +106,7 @@ def obtener_file(file):
 
     return df_origen, df_coste_24h, df_demver_24h, demanda, demanda_neteo,vertido,vertido_neteo, fecha_ini_curva, fecha_fin_curva, precio_medio_exc, coste_exc, precio_medio_pvpc, coste_pvpc
 
-# %% [markdown]
-# id_exc=1739
-# id_pvpc=10391
-# fecha_ini_curva=df_origen['fecha'].min().strftime('%Y-%m-%d')
-# fecha_fin_curva=df_origen['fecha'].max().strftime('%Y-%m-%d')
-# agrupacion='hour'
-# fecha_ini_curva,fecha_fin_curva
 
-# %%
 def graf_no_neteo_total(df_origen):
     graf_no_neteo_total=px.bar(df_origen,x='fecha_hora',y=['demanda','vertido'],
                             color_discrete_map={'demanda':'red','vertido':'green'},
@@ -163,7 +148,6 @@ def graf_no_neteo_total(df_origen):
         )
     return graf_no_neteo_total
 
-# %%
 def graf_neteo_total(df_origen):
     graf_neteo_total=px.bar(df_origen,x='fecha_hora',y=['demanda_neteo','vertido_neteo'],
                             color_discrete_map={'demanda_neteo':'red','vertido_neteo':'green'},
@@ -206,7 +190,6 @@ def graf_neteo_total(df_origen):
     
     return graf_neteo_total
 
-# %%
 def graf_no_neteo(df_origen):
     graf_no_neteo=px.bar(df_origen,x='hora',y=['demanda','vertido'],
                             color_discrete_map={'demanda':'red','vertido':'green'},
@@ -238,7 +221,6 @@ def graf_no_neteo(df_origen):
     
     return graf_no_neteo
 
-# %%
 def graf_coste_exc(df_coste_24h):
     
     #preparamos columna de color para representar barras positivas y negativas
@@ -321,7 +303,6 @@ def graf_coste_exc(df_coste_24h):
     
     return graf_coste_exc
 
-# %%
 def graf_coste_pvpc(df_coste_24h):
     #preparamos para dos ejes y
     graf_coste_pvpc = make_subplots(specs=[[{"secondary_y": True}]])
@@ -397,7 +378,6 @@ def graf_coste_pvpc(df_coste_24h):
     
     return graf_coste_pvpc
 
-# %%
 def graf_demver(df_demver_24h):
     #preparamos para dos ejes
     graf_demver = make_subplots(specs=[[{"secondary_y": True}]])
