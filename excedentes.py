@@ -147,5 +147,6 @@ with col10:
 
         total_coste_fijo=round(coste_fijo_demanda-coste_fijo_vertidos,2)
         dif_pvpc_fijo=round(total_coste_pvpc-total_coste_fijo,2)
-        st.metric(f':orange-background[Total FIJO (€)]', value=total_coste_fijo,delta=f'{dif_pvpc_fijo}%')
+        dif_pvpc_fijo_porc = round(dif_pvpc_fijo/total_coste_pvpc,1)
+        st.metric(f':orange-background[Total FIJO (€)]', value=total_coste_fijo, delta=f'{dif_pvpc_fijo_porc}%')
     
